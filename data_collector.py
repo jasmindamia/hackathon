@@ -5,7 +5,7 @@ from mediapipe.python.solutions import hands as mp_hands
 from mediapipe.python.solutions import drawing_utils as mp_drawing
 
 # --- CONFIG ---
-CURRENT_WORD = "TERIMA KASIH" 
+CURRENT_WORD = "ABSOLUTE CINEMA" 
 hands = mp_hands.Hands(static_image_mode=False, max_num_hands=2, min_detection_confidence=0.7)
 cap = cv2.VideoCapture(0)
 
