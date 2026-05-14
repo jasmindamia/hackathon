@@ -4,12 +4,12 @@ import collections
 from mediapipe.python.solutions import hands as mp_hands
 from mediapipe.python.solutions import drawing_utils as mp_drawing
 
-# --- CONFIG ---
-CURRENT_WORD = "ABSOLUTE CINEMA" 
+#congifigurate
+CURRENT_WORD = "test" 
 hands = mp_hands.Hands(static_image_mode=False, max_num_hands=2, min_detection_confidence=0.7)
 cap = cv2.VideoCapture(0)
 
-# Buffer stores the last 11 frames of data
+#0.3 seconds, 11 frames per pressing s for one time
 history = collections.deque(maxlen=11)
 
 print(f"COLLECTING MOTION: {CURRENT_WORD}")
@@ -17,24 +17,37 @@ print("Press 's' to save a motion sequence. 'q' to quit.")
 
 while cap.isOpened():
     success, frame = cap.read()
-    if not success: break
+    if success == False:
+        break
+
     frame = cv2.flip(frame, 1)
+
     img_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
     results = hands.process(img_rgb)
 
-    # Reset current coordinates for this frame
-    current_coords = [0.0] * 84
+    # coordinate reset
+    current_coords = []
+    for i in range(84): current_coords.append(0.0)
 
     if results.multi_hand_landmarks:
-        # --- RESTORED: DRAWING SKELETONS ---
+        #drawing lines on hands n getting coords
         for i, hand_lms in enumerate(results.multi_hand_landmarks):
             mp_drawing.draw_landmarks(frame, hand_lms, mp_hands.HAND_CONNECTIONS)
             
-            # Sort data into Right (0-41) or Left (42-83)
+            # Sort data into right (0-41) or left (42-83)
             lbl = results.multi_handedness[i].classification[0].label
-            idx = 0 if lbl == "Right" else 42
-            coords = [c for lm in hand_lms.landmark for c in (lm.x, lm.y)]
-            current_coords[idx:idx+42] = coords
+            if lbl=="Right":
+                start_idx=0
+            else: 
+                start_idx=42
+            
+            hand_coords = []
+            for lm in hand_lms.landmark:
+                hand_coords.append(lm.x)
+                hand_coords.append(lm.y)
+
+            for j in range(42):
+                current_coords[start_idx+j] = hand_coords[j]
     
     # Add current frame to history
     history.append(current_coords)
@@ -42,14 +55,19 @@ while cap.isOpened():
     cv2.imshow('Motion Collector', frame)
     key = cv2.waitKey(1) & 0xFF
 
-    if key == ord('s') and len(history) == 11:
-        # Stack 3 frames (Start, Mid, End of the 0.3s window)
-        motion_data = history[0] + history[5] + history[10]
-        with open("hand_data.csv", "a", newline="") as f:
-            csv.writer(f).writerow([CURRENT_WORD] + motion_data)
-        print(f"Captured motion for: {CURRENT_WORD}")
+    if key== ord('s'):
+        if len(history)==11:
+            motion_data=history[0]+history[5]+history[10]
 
-    elif key == ord('q'): break
+            with open("hand_data.csv", "a", newline="") as f:
+                writer = csv.writer(f)
+                row_data=[CURRENT_WORD]+motion_data
+                writer.writerow(row_data)
+            
+            print("Captured motion for: " + str(CURRENT_WORD))
+
+    elif key==ord('q'):
+        break
 
 cap.release()
 cv2.destroyAllWindows()
