@@ -74,7 +74,8 @@ while True:
         history_list.clear()
 
     cv2.imshow('Level 4: Word Translator', frame)
-    if cv2.waitKey(1) & 0xFF == ord('q'): break
+    if cv2.waitKey(1) == ord('q'): 
+        break
 
 cap.release()
 cv2.destroyAllWindows()

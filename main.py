@@ -14,15 +14,15 @@ while cap.isOpened():
     if success==False:
         break
     
-    frame = cv2.flip(frame, 1)
-    img_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    frame=cv2.flip(frame, 1)
+    img_rgb=cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
-    # Process the frame
+    #process the frame
     results = hands.process(img_rgb)
 
     if results.multi_hand_landmarks:
         for hand_landmarks in results.multi_hand_landmarks:
-            # Drawing landmarks using our direct import
+            #drawing landmarks using our direct import
             mp_drawing.draw_landmarks(frame,hand_landmarks, mp_hands.HAND_CONNECTIONS)
 
     cv2.imshow('Level 1: Tracking', frame)

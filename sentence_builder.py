@@ -151,10 +151,9 @@ while True:
     cv2.imshow('Smart MSL Translator',frame)
     
     #check keyboard keys
-    key =cv2.waitKey(1) &0xFF
-    if key==ord('q'): 
+    if cv2.waitKey(1) == ord('q'): 
         break
-    if key==ord('c'):
+    if cv2.waitKey(1) == ord('c'):
         sentence_list=[]
         final_output="Cleared."
         is_thinking=False
