@@ -62,8 +62,10 @@ while cap.isOpened():
         break
 
     if key== ord('s'):
-        if len(history_list)==11:
-            motion_data=history_list[0]+history_list[5]+history_list[10]
+        # FIXED: Look at the last 11 items instead of the whole list length
+        if len(history_list) >= 11:
+            last_11_frames = history_list[-11:]
+            motion_data=last_11_frames[0]+last_11_frames[5]+last_11_frames[10]
 
             with open("hand_data.csv", "a", newline="") as f:
                 writer = csv.writer(f)
