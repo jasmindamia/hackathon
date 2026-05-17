@@ -57,7 +57,7 @@ while True:
         #add to memorty
         history_list.append(current_coords)
         
-        # FIX: Keep history size at exactly 11 items maximum
+        #
         if len(history_list) > 11:
             history_list.pop(0)
 

@@ -62,7 +62,7 @@ while cap.isOpened():
         break
 
     if key== ord('s'):
-        # FIXED: Look at the last 11 items instead of the whole list length
+        
         if len(history_list) >= 11:
             last_11_frames = history_list[-11:]
             motion_data=last_11_frames[0]+last_11_frames[5]+last_11_frames[10]
